@@ -23,6 +23,9 @@ struct move_list {
         int n;
 }
 
+void make_move(struct move m);
+void undo_move(struct move m);
+
 void gen_moves(struct move_list *v);
 void gen_ta_moves(struct move_list *v);
 

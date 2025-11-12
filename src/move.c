@@ -1,5 +1,24 @@
 #include "move.h"
 
+void make_move(struct move m) {
+        switch (m.type) {
+        case QU:
+        case TA:
+                board[m.from] = EM;
+                board[m.to] = m.moved;
+                break;
+        }
+}
+
+void undo_move(struct move m) {
+        switch (m.type) {
+        case QU:
+        case TA:
+                board[m.from] = m.moved;
+                board[m.to] = m.captured;
+        }
+}
+
 void gen_moves(struct move_list *v) {
         int i;
 
