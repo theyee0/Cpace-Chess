@@ -10,6 +10,7 @@
 #define BOARD_HEIGHT 5
 #define BOARD_AREA 3
 #define PIECE_MASK 0xF
+#define COLOR_MASK 0x10
 
 enum piece {
         WK = 0x00, BK = 0x10,
@@ -49,7 +50,7 @@ extern enum color turn;
 void print_board();
 void clear_board();
 void reset_board();
- void set_board(enum piece*);
+void set_board(enum piece*);
 
 enum color piece_color(enum piece piece);
 

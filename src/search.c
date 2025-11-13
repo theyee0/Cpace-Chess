@@ -1,7 +1,54 @@
 #include "search.h"
 
+static int sum_material() {
+        int piece_value[7] = {
+                -1,
+                900,
+                500,
+                300,
+                600,
+                200,
+                100
+        };
+
+        int i, j, k;
+        int score = 0;
+        unsigned int square;
+        unsigned int piece;
+
+        int white_king = 0;
+        int black_king = 0;
+
+        for (i = 0; i < BOARD_NUM; i++) {
+                for (j = 7; j < 42; j += 7) {
+                        for (k = 1; k <= 5; k++) {
+                                square = BOARD_MARGIN + i * 49 + j + k;
+                                piece = board[square] & PIECE_MASK;
+
+                                if (piece == 0) {
+                                        white_king |= (board[square] == WK);
+                                        black_king |= (board[square] == BK);
+                                        continue;
+                                }
+
+                                score += (piece_color(board[square]) == BLACK) ? -piece_value[piece] : piece_value[piece];
+                        }
+                }
+        }
+
+        if (!white_king) {
+                score = -INT_MAX
+        }
+
+        if (!black_king) {
+                score = INT_MAX;
+        }
+
+        return turn == WHITE ? score : -score;
+}
+
 int eval() {
-        return 0;
+        return sum_material();
 }
 
 struct move get_move(int depth) {
