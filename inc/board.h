@@ -24,7 +24,7 @@ enum piece {
 };
 
 enum direction {
-        N = 7, E = 1, S = -7, W = -1, H = 49, L = -49,
+        N = -7, E = 1, S = 7, W = -1, H = -49, L = 49,
         NH = N + H, EH = E + H, SH = S + H, WH = W + H,
         NL = N + L, EL = E + L, SL = S + L, WL = W + L,
         NEH = N + E + H, NWH = N + W + H, SEH = S + E + H, SWH = S + W + H,
