@@ -36,8 +36,10 @@ void gen_moves(struct move_list *v) {
                 gen_pawn
         };
 
+        v->n = 0;
+
         for (i = 0; i < BOARD_SIZE; i++) {
-                if (!is_valid(i)) {
+                if (!is_friendly(i)) {
                         continue;
                 }
 
@@ -58,8 +60,10 @@ void gen_ta_moves(struct move_list *v) {
                 gen_ta_pawn
         };
 
+        v->n = 0;
+
         for (i = 0; i < BOARD_SIZE; i++) {
-                if (!is_valid(i)) {
+                if (!is_friendly(i)) {
                         continue;
                 }
 
@@ -87,17 +91,17 @@ static void gen_sliding(struct move_list *v, unsigned int square, enum direction
 
 static void gen_ta_sliding(struct move_list *v, unsigned int square, enum direction *d, int n) {
         int i;
-        int n_square;
+        int target;
 
         for (i = 0; i < n; i++) {
-                n_square = square + d[i];
+                target = square + d[i];
 
-                while (n_square == EM) {
-                        n_square += d[i];
+                while (is_empty(target)) {
+                        target += d[i];
                 }
 
-                if (is_enemy(n_square)) {
-                        append_move(v, TA, square, n_square, board[n_square], board[square]);
+                if (is_enemy(target)) {
+                        append_move(v, TA, square, target, board[target], board[square]);
                 }
         }
 }
@@ -108,9 +112,9 @@ static void gen_stepping(struct move_list *v, unsigned int square, enum directio
         enum move_type type;
 
         for (i = 0; i < n; i++) {
-                target = square = d[i];
+                target = square + d[i];
 
-                if (board[target] == IV) {
+                if (is_invalid(i) || is_friendly(i)) {
                         continue;
                 }
 
@@ -125,7 +129,7 @@ static void gen_ta_stepping(struct move_list *v, unsigned int square, enum direc
         int target;
 
         for (i = 0; i < n; i++) {
-                target = square = d[i];
+                target = square + d[i];
 
                 if (is_enemy(target)) {
                         append_move(v, TA, square, target, board[target], board[square]);
@@ -143,7 +147,7 @@ void gen_king(struct move_list *v, unsigned int square) {
                 NEL, SEL, NWL, SWL
         };
 
-        gen_stepping(v, square, d, 21);
+        gen_stepping(v, square, d, 22);
 }
 
 void gen_ta_king(struct move_list *v, unsigned int square) {
@@ -155,7 +159,7 @@ void gen_ta_king(struct move_list *v, unsigned int square) {
                 NEL, SEL, NWL, SWL
         };
 
-        gen_ta_stepping(v, square, d, 21);
+        gen_ta_stepping(v, square, d, 22);
 }
 
 void gen_queen(struct move_list *v, unsigned int square) {
