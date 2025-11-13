@@ -69,12 +69,12 @@ struct move get_move(int depth) {
         for (i = 0; i < v.n; i++) {
                 make_move(v.v[i]);
 
-                score = alpha_beta(-beta, -alpha, depth - 1);
+                score = -alpha_beta(-beta, -alpha, depth - 1);
 
                 undo_move(v.v[i]);
 
                 if (score > best_score) {
-                        score = best_score;
+                        best_score = score;
                         best_move = v.v[i];
                 }
         }
@@ -85,10 +85,11 @@ struct move get_move(int depth) {
 int alpha_beta(int alpha, int beta, int depth) {
         struct move_list v;
         int score;
+        int best_score = -INT_MAX;
         int i;
                 
         if (depth == 0) {
-                return quiesce(alpha, beta);
+                return quiesce(alpha, beta, 5);
         }
 
         gen_moves(&v);
@@ -99,52 +100,81 @@ int alpha_beta(int alpha, int beta, int depth) {
 
         for (i = 0; i < v.n; i++) {
                 make_move(v.v[i]);
-                score = -alpha_beta(-beta, -alpha, depth - 1);
+
+                /* Null window search */
+                score = -alpha_beta(-(alpha + 1), -alpha, depth - 1);
+
+                if (alpha < score && score < beta) {
+                        score = -alpha_beta(-beta, -alpha, depth - 1);
+                }
+
                 undo_move(v.v[i]);
+
+                if (score > best_score) {
+                        best_score = score;
+                }
 
                 if (score > alpha) {
                         alpha = score;
                 }
 
-                if (alpha > beta) {
+                if (alpha >= beta) {
                         return alpha;
                 }
         }
 
-        return alpha;
+        return best_score;
 }
 
-int quiesce(int alpha, int beta) {
+int quiesce(int alpha, int beta, int depth) {
         const int delta = 200;
-
         struct move_list v;
+        int best_score;
         int score;
         int i;
 
+        if (depth <= 0) {
+                return eval();
+        }
+
         score = eval();
-        if (score > beta) {
+
+        if (score >= beta) {
                 return score;
         }
 
-        if (score + delta < alpha) {
+        if (score + delta <= alpha) {
                 return score;
+        }
+
+        if (score > alpha) {
+                alpha = score;
         }
 
         gen_ta_moves(&v);
 
         for (i = 0; i < v.n; i++) {
                 make_move(v.v[i]);
-                score = -quiesce(-beta, -alpha);
+
+                score = -quiesce(-(alpha + 1), alpha, depth - 1);
+                if (alpha < score && score < beta) {
+                        score = -quiesce(-beta, -alpha, depth - 1);
+                }
+
                 undo_move(v.v[i]);
+
+                if (score > best_score) {
+                        best_score = score;
+                }
 
                 if (score > alpha) {
                         alpha = score;
                 }
 
-                if (alpha > beta) {
+                if (alpha >= beta) {
                         return alpha;
                 }
         }
 
-        return alpha;
+        return best_score;
 }
