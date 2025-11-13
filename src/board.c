@@ -45,7 +45,7 @@ void clear_board() {
         int square;
 
         for (i = 0; i < BOARD_NUM; i++) {
-                for (j = 0; j < 49; j += 7) {
+                for (j = 7; j < 42; j += 7) {
                         for (k = 1; k <= 5; k++) {
                                 square = BOARD_MARGIN + i * 49 + j + k;
                                 board[square] = EM;
