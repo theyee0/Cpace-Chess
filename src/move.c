@@ -18,6 +18,7 @@ void undo_move(struct move m) {
         case TA:
                 board[m.from] = m.moved;
                 board[m.to] = m.captured;
+                break;
         }
 
         turn = !turn;
