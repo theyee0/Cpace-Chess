@@ -11,7 +11,7 @@
 
 enum pieces {
         WK = 0x00, BK = 0x10,
-        WQ = 0x01, BK = 0x11,
+        WQ = 0x01, BQ = 0x11,
         WR = 0x02, BR = 0x12,
         WB = 0x03, BB = 0x13,
         WN = 0x04, BN = 0x14,
@@ -21,19 +21,19 @@ enum pieces {
 };
 
 enum directions {
-        N, E, S, W, U, D,
-        NU, EU, SU, WU,
-        ND, ED, SD, WD,
-        NEU, NWU, SEU, SWU,
-        NED, NWD, SED, SWD,
-        NNE, NNW, NNU, NND,
-        EEN, EES, EEU, EED,
-        SSE, SSW, SSU, SSD,
-        WWN, WWS, WWU, WWD,
-        NUU, NDD,
-        EUU, EDD,
-        SUU, SDD,
-        WUU, WDD
+        N = 6, E = 1, S = -6, W = -1, H = 36, L = -36,
+        NH = N + H, EH = E + H, SH = S + H, WH = W + H,
+        NL = N + L, EL = E + L, SL = S + L, WL = W + L,
+        NEH = N + E + H, NWH = N + W + H, SEH = S + E + H, SWH = S + W + H,
+        NEL = N + E + L, NWL = N + W + L, SEL = S + E + L, SWL = S + W + L,
+        NNE = N + N + E, NNW = N + N + W, NNH = N + N + H, NNL = N + N + L,
+        EEN = E + E + N, EES = E + E + S, EEH = E + E + H, EEL = E + E + L,
+        SSE = S + S + E, SSW = S + S + W, SSH = S + S + H, SSL = S + S + L,
+        WWN = W + W + N, WWS = W + W + S, WWH = W + W + H, WWL = W + W + L,
+        NHH = N + H + H, NLL = N + L + L,
+        EHH = E + H + H, ELL = E + L + L,
+        SHH = S + H + H, SLL = S + L + L,
+        WHH = W + H + H, WLL = W + L + L
 };
 
 enum color {

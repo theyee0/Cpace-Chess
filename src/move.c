@@ -135,11 +135,11 @@ static void gen_ta_stepping(struct move_list *v, unsigned int square, enum direc
 
 void gen_king(struct move_list *v, unsigned int square) {
         enum directions d[21] = {
-                N, E, S, W, U, D,
-                NU, EU, SU, WU,
-                ND, ED, SD, WD,
-                NEU, SEU, NWU, SWU,
-                NED, SED, NWD, SWD
+                N, E, S, W, H, L,
+                NH, EH, SH, WH,
+                NL, EL, SL, WL,
+                NEH, SEH, NWH, SWH,
+                NEL, SEL, NWL, SWL
         };
 
         gen_stepping(v, square, d, 21);
@@ -147,10 +147,10 @@ void gen_king(struct move_list *v, unsigned int square) {
 
 void gen_ta_king(struct move_list *v, unsigned int square) {
         enum directions d[21] = {
-                N, E, S, W, U, D,
-                NU, EU, SU, WU,
+                N, E, S, W, H, D,
+                NH, EH, SH, WH,
                 ND, ED, SD, WD,
-                NEU, SEU, NWU, SWU,
+                NEH, SEH, NWH, SWH,
                 NED, SED, NWD, SWD
         };
 
@@ -170,21 +170,21 @@ void gen_ta_queen(struct move_list *v, unsigned int square) {
 }
 
 void gen_rook(struct move_list *v, unsigned int square) {
-        enum directions d[6] = {N, E, S, W, U, D};
+        enum directions d[6] = {N, E, S, W, H, L};
 
         gen_sliding(v, square, d, 6);
 }
 
 void gen_ta_rook(struct move_list *v, unsigned int square) {
-        enum directions d[6] = {N, E, S, W, U, D};
+        enum directions d[6] = {N, E, S, W, H, L};
 
         gen_ta_sliding(v, square, d, 6);
 }
 
 void gen_bishop(struct move_list *v, unsigned int square) {
         enum directions d[8] = {
-                NU, EU, SU, WU,
-                ND, ED, SD, WD
+                NH, EH, SH, WH,
+                NL, EL, SL, WL
         };
 
         gen_sliding(v, square, d, 8);
@@ -192,8 +192,8 @@ void gen_bishop(struct move_list *v, unsigned int square) {
 
 void gen_ta_bishop(struct move_list *v, unsigned int square) {
         enum directions d[8] = {
-                NU, EU, SU, WU,
-                ND, ED, SD, WD
+                NH, EH, SH, WH,
+                NL, EL, SL, WL
         };
 
         gen_ta_sliding(v, square, d, 8);
@@ -201,10 +201,10 @@ void gen_ta_bishop(struct move_list *v, unsigned int square) {
 
 void gen_knight(struct move_list *v, unsigned int square) {
         enum directions d[24] = {
-                NNE, NNW, NNU, NND, NUU, NDD,
-                EEN, EES, EEU, EED, EUU, EDD,
-                SSE, SSW, SSU, SSD, SUU, SDD,
-                WWN, WWS, WWU, WWD, WUU, WDD
+                NNE, NNW, NNH, NNL, NHH, NLL,
+                EEN, EES, EEH, EEL, EHH, ELL,
+                SSE, SSW, SSH, SSL, SHH, SLL,
+                WWN, WWS, WWH, WWL, WHH, WLL
         };
 
         gen_stepping(v, square, d, 24);
@@ -212,10 +212,10 @@ void gen_knight(struct move_list *v, unsigned int square) {
 
 void gen_ta_knight(struct move_list *v, unsigned int square) {
         enum directions d[24] = {
-                NNE, NNW, NNU, NND, NUU, NDD,
-                EEN, EES, EEU, EED, EUU, EDD,
-                SSE, SSW, SSU, SSD, SUU, SDD,
-                WWN, WWS, WWU, WWD, WUU, WDD
+                NNE, NNW, NNH, NNL, NHH, NLL,
+                EEN, EES, EEH, EEL, EHH, ELL,
+                SSE, SSW, SSH, SSL, SHH, SLL,
+                WWN, WWS, WWH, WWL, WHH, WLL
         };
 
         gen_ta_stepping(v, square, d, 24);
@@ -223,8 +223,8 @@ void gen_ta_knight(struct move_list *v, unsigned int square) {
 
 void gen_unicorn(struct move_list *v, unsigned int square) {
         enum directions d[8] = {
-                NEU, NED, SEU, SED,
-                NWU, NWD, SWU, SWD
+                NEH, NEL, SEH, SEL,
+                NWH, NWL, SWH, SWL
         };
 
         gen_sliding(v, square, d, 8);
@@ -232,8 +232,8 @@ void gen_unicorn(struct move_list *v, unsigned int square) {
 
 void gen_ta_unicorn(struct move_list *v, unsigned int square) {
         enum directions d[8] = {
-                NEU, NED, SEU, SED,
-                NWU, NWD, SWU, SWD
+                NEH, NEL, SEH, SEL,
+                NWH, NWL, SWH, SWL
         };
 
         gen_sliding(v, square, d, 8);
@@ -241,17 +241,17 @@ void gen_ta_unicorn(struct move_list *v, unsigned int square) {
 
 
 void gen_pawn(struct move_list *v, unsigned int square) {
-        enum directions d[4] = {E, W, U, D};
+        enum directions d[4] = {E, W, H, L};
         enum directions forward = (turn == WHITE) ? N : S;
         unsigned int target;
         int i;
 
-        target = square + U;
+        target = square + H;
         if (board[target] == EM) {
                 append_move(v, QU, square, target, board[target], board[square]);
         }
 
-        target = square + D;
+        target = square + L;
         if (board[target] == EM) {
                 append_move(v, QU, square, target, board[target], board[square]);
         }
@@ -270,7 +270,7 @@ void gen_pawn(struct move_list *v, unsigned int square) {
 }
 
 void gen_ta_pawn(struct move_list *v, unsigned int square) {
-        enum directions d[4] = {E, W, U, D};
+        enum directions d[4] = {E, W, H, L};
         enum directions forward = (turn == WHITE) ? N : S;
         unsigned int target;
         int i;
