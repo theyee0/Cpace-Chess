@@ -3,7 +3,7 @@
 
 #include "board.h"
 #include "move.h"
-#include "stdint.h"
+#include <limits.h>
 
 int eval();
 struct move get_move(int depth);

@@ -15,18 +15,14 @@ struct move get_move(int depth) {
 
         int i;
 
-        gen_move(&v);
-
-        if (v.n == 0) {
-                return 0;
-        }
+        gen_moves(&v);
 
         best_move = v.v[0];
 
         for (i = 0; i < v.n; i++) {
                 make_move(v.v[i]);
 
-                score = alpha_beta(-beta, -alpha);
+                score = alpha_beta(-beta, -alpha, depth - 1);
 
                 undo_move(v.v[i]);
 
