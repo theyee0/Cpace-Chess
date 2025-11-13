@@ -44,11 +44,52 @@ static int sum_material() {
                 score = INT_MAX;
         }
 
-        return turn == WHITE ? score : -score;
+        return score;
+}
+
+static int compute_mobility() {
+        const int weight = 17;
+
+        struct move_list v;
+        enum color current_turn = turn;
+
+        int white_moves;
+        int black_moves;
+
+        turn = WHITE;
+        gen_moves(&v);
+        white_moves = v.n;
+
+        turn = BLACK;
+        gen_moves(&v);
+        black_moves = v.n;
+
+        turn = current_turn;
+
+        return (white_moves - black_moves) * weight;
 }
 
 int eval() {
-        return sum_material();
+        int (*eval_components[2])() = {
+                sum_material,
+                compute_mobility
+        };
+
+        int score;
+        int total = 0;
+        int i;
+
+        for (i = 0; i < 2; i++) {
+                score = eval_components[i]();
+
+                if (abs(score) == INT_MAX) {
+                        return turn == WHITE ? score : -score;
+                }
+
+                total += score;
+        }
+
+        return turn == WHITE ? total : -total;
 }
 
 struct move get_move(int depth) {
@@ -89,7 +130,7 @@ int alpha_beta(int alpha, int beta, int depth) {
         int i;
                 
         if (depth == 0) {
-                return quiesce(alpha, beta, 5);
+                return eval();
         }
 
         gen_moves(&v);
