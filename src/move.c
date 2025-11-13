@@ -8,6 +8,8 @@ void make_move(struct move m) {
                 board[m.to] = m.moved;
                 break;
         }
+
+        turn = !turn;
 }
 
 void undo_move(struct move m) {
@@ -17,6 +19,8 @@ void undo_move(struct move m) {
                 board[m.from] = m.moved;
                 board[m.to] = m.captured;
         }
+
+        turn = !turn;
 }
 
 void gen_moves(struct move_list *v) {
