@@ -22,7 +22,7 @@ void undo_move(struct move m) {
 void gen_moves(struct move_list *v) {
         int i;
 
-        void (*gen_func[7]) (struct move_list*, int) = {
+        void (*gen_func[7]) (struct move_list*, unsigned int) = {
                 gen_king,
                 gen_queen,
                 gen_rook,
@@ -44,7 +44,7 @@ void gen_moves(struct move_list *v) {
 void gen_ta_moves(struct move_list *v) {
         int i;
 
-        void (*gen_func[7]) (struct move_list*, int) = {
+        void (*gen_func[7]) (struct move_list*, unsigned int) = {
                 gen_ta_king,
                 gen_ta_queen,
                 gen_ta_rook,
