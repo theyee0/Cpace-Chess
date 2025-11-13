@@ -146,11 +146,7 @@ int is_enemy(unsigned int square) {
                 return 0;
         }
 
-        if (!(board[square] & PIECE_MASK) == !turn) {
-                return 1;
-        }
-
-        return 0;
+        return piece_color(board[square]) != turn;
 }
 
 int is_empty(unsigned int square) {
@@ -161,14 +157,14 @@ int is_valid(unsigned int square) {
         return board[square] != IV;
 }
 
+int is_invalid(unsigned int square) {
+        return board[square] == IV;
+}
+
 int is_friendly(unsigned int square) {
         if (board[square] == IV || board[square] == EM) {
                 return 0;
         }
 
-        if (!(board[square] & PIECE_MASK) != !turn) {
-                return 1;
-        }
-
-        return 0;
+        return piece_color(board[square]) == turn;
 }

@@ -24,7 +24,7 @@ enum piece {
 };
 
 enum direction {
-        N = 6, E = 1, S = -6, W = -1, H = 36, L = -36,
+        N = 7, E = 1, S = -7, W = -1, H = 49, L = -49,
         NH = N + H, EH = E + H, SH = S + H, WH = W + H,
         NL = N + L, EL = E + L, SL = S + L, WL = W + L,
         NEH = N + E + H, NWH = N + W + H, SEH = S + E + H, SWH = S + W + H,
@@ -57,6 +57,7 @@ enum color piece_color(enum piece piece);
 int is_enemy(unsigned int);
 int is_empty(unsigned int);
 int is_valid(unsigned int);
+int is_invalid(unsigned int);
 int is_friendly(unsigned int);
 
 #endif
