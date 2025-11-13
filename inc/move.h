@@ -45,4 +45,11 @@ void gen_ta_knight(struct move_list *v, unsigned int square);
 void gen_ta_unicorn(struct move_list *v, unsigned int square);
 void gen_ta_pawn(struct move_list *v, unsigned int square);
 
+void append_move(struct move_list *v,
+                 enum move_type type,
+                 unsigned int from,
+                 unsigned int to,
+                 enum piece captured,
+                 enum piece moved);
+
 #endif

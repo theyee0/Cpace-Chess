@@ -30,10 +30,10 @@ void gen_moves(struct move_list *v) {
                 gen_knight,
                 gen_unicorn,
                 gen_pawn
-        }
+        };
 
         for (i = 0; i < BOARD_SIZE; i++) {
-                if (!valid_square(i)) {
+                if (!is_valid(i)) {
                         continue;
                 }
 
@@ -52,10 +52,10 @@ void gen_ta_moves(struct move_list *v) {
                 gen_ta_knight,
                 gen_ta_unicorn,
                 gen_ta_pawn
-        }
+        };
 
         for (i = 0; i < BOARD_SIZE; i++) {
-                if (!valid_square(i)) {
+                if (!is_valid(i)) {
                         continue;
                 }
 
@@ -63,15 +63,14 @@ void gen_ta_moves(struct move_list *v) {
         }
 }
 
-static void gen_sliding(struct move_list *v, unsigned int square, enum directions *d, int n) {
+static void gen_sliding(struct move_list *v, unsigned int square, enum direction *d, int n) {
         int i;
         int target;
-        enum move_type type;
 
         for (i = 0; i < n; i++) {
                 target = square + d[i];
 
-                while (target == EM) {
+                while (is_empty(target)) {
                         append_move(v, QU, square, target, board[target], board[square]);
                         target += d[i];
                 }
@@ -82,10 +81,9 @@ static void gen_sliding(struct move_list *v, unsigned int square, enum direction
         }
 }
 
-static void gen_ta_sliding(struct move_list *v, unsigned int square, enum directions *d, int n) {
+static void gen_ta_sliding(struct move_list *v, unsigned int square, enum direction *d, int n) {
         int i;
         int n_square;
-        enum move_type type;
 
         for (i = 0; i < n; i++) {
                 n_square = square + d[i];
@@ -100,7 +98,7 @@ static void gen_ta_sliding(struct move_list *v, unsigned int square, enum direct
         }
 }
 
-static void gen_stepping(struct move_list *v, unsigned int square, enum directions *d, int n) {
+static void gen_stepping(struct move_list *v, unsigned int square, enum direction *d, int n) {
         int i;
         int target;
         enum move_type type;
@@ -112,29 +110,28 @@ static void gen_stepping(struct move_list *v, unsigned int square, enum directio
                         continue;
                 }
 
-                type = is_enemy(n_sq) ? TA : QU;
+                type = is_enemy(target) ? TA : QU;
 
                 append_move(v, type, square, target, board[target], board[square]);
         }
 }
 
-static void gen_ta_stepping(struct move_list *v, unsigned int square, enum directions *d, int n) {
+static void gen_ta_stepping(struct move_list *v, unsigned int square, enum direction *d, int n) {
         int i;
         int target;
-        enum move_type type;
 
         for (i = 0; i < n; i++) {
                 target = square = d[i];
 
-                if (is_enemy(target))
-                        append_move(v, TA, square, target, board[n_sq], board[square]);
+                if (is_enemy(target)) {
+                        append_move(v, TA, square, target, board[target], board[square]);
                 }
         }
 }
 
 
 void gen_king(struct move_list *v, unsigned int square) {
-        enum directions d[21] = {
+        enum direction d[22] = {
                 N, E, S, W, H, L,
                 NH, EH, SH, WH,
                 NL, EL, SL, WL,
@@ -146,12 +143,12 @@ void gen_king(struct move_list *v, unsigned int square) {
 }
 
 void gen_ta_king(struct move_list *v, unsigned int square) {
-        enum directions d[21] = {
-                N, E, S, W, H, D,
+        enum direction d[22] = {
+                N, E, S, W, H, L,
                 NH, EH, SH, WH,
-                ND, ED, SD, WD,
+                NL, EL, SL, WL,
                 NEH, SEH, NWH, SWH,
-                NED, SED, NWD, SWD
+                NEL, SEL, NWL, SWL
         };
 
         gen_ta_stepping(v, square, d, 21);
@@ -170,19 +167,19 @@ void gen_ta_queen(struct move_list *v, unsigned int square) {
 }
 
 void gen_rook(struct move_list *v, unsigned int square) {
-        enum directions d[6] = {N, E, S, W, H, L};
+        enum direction d[6] = {N, E, S, W, H, L};
 
         gen_sliding(v, square, d, 6);
 }
 
 void gen_ta_rook(struct move_list *v, unsigned int square) {
-        enum directions d[6] = {N, E, S, W, H, L};
+        enum direction d[6] = {N, E, S, W, H, L};
 
         gen_ta_sliding(v, square, d, 6);
 }
 
 void gen_bishop(struct move_list *v, unsigned int square) {
-        enum directions d[8] = {
+        enum direction d[8] = {
                 NH, EH, SH, WH,
                 NL, EL, SL, WL
         };
@@ -191,7 +188,7 @@ void gen_bishop(struct move_list *v, unsigned int square) {
 }
 
 void gen_ta_bishop(struct move_list *v, unsigned int square) {
-        enum directions d[8] = {
+        enum direction d[8] = {
                 NH, EH, SH, WH,
                 NL, EL, SL, WL
         };
@@ -200,7 +197,7 @@ void gen_ta_bishop(struct move_list *v, unsigned int square) {
 }
 
 void gen_knight(struct move_list *v, unsigned int square) {
-        enum directions d[24] = {
+        enum direction d[24] = {
                 NNE, NNW, NNH, NNL, NHH, NLL,
                 EEN, EES, EEH, EEL, EHH, ELL,
                 SSE, SSW, SSH, SSL, SHH, SLL,
@@ -211,7 +208,7 @@ void gen_knight(struct move_list *v, unsigned int square) {
 }
 
 void gen_ta_knight(struct move_list *v, unsigned int square) {
-        enum directions d[24] = {
+        enum direction d[24] = {
                 NNE, NNW, NNH, NNL, NHH, NLL,
                 EEN, EES, EEH, EEL, EHH, ELL,
                 SSE, SSW, SSH, SSL, SHH, SLL,
@@ -222,7 +219,7 @@ void gen_ta_knight(struct move_list *v, unsigned int square) {
 }
 
 void gen_unicorn(struct move_list *v, unsigned int square) {
-        enum directions d[8] = {
+        enum direction d[8] = {
                 NEH, NEL, SEH, SEL,
                 NWH, NWL, SWH, SWL
         };
@@ -231,7 +228,7 @@ void gen_unicorn(struct move_list *v, unsigned int square) {
 }
 
 void gen_ta_unicorn(struct move_list *v, unsigned int square) {
-        enum directions d[8] = {
+        enum direction d[8] = {
                 NEH, NEL, SEH, SEL,
                 NWH, NWL, SWH, SWL
         };
@@ -241,8 +238,8 @@ void gen_ta_unicorn(struct move_list *v, unsigned int square) {
 
 
 void gen_pawn(struct move_list *v, unsigned int square) {
-        enum directions d[4] = {E, W, H, L};
-        enum directions forward = (turn == WHITE) ? N : S;
+        enum direction d[4] = {E, W, H, L};
+        enum direction forward = (turn == WHITE) ? N : S;
         unsigned int target;
         int i;
 
@@ -270,8 +267,8 @@ void gen_pawn(struct move_list *v, unsigned int square) {
 }
 
 void gen_ta_pawn(struct move_list *v, unsigned int square) {
-        enum directions d[4] = {E, W, H, L};
-        enum directions forward = (turn == WHITE) ? N : S;
+        enum direction d[4] = {E, W, H, L};
+        enum direction forward = (turn == WHITE) ? N : S;
         unsigned int target;
         int i;
 
@@ -284,11 +281,11 @@ void gen_ta_pawn(struct move_list *v, unsigned int square) {
 }
 
 void append_move(struct move_list *v,
-                 struct move_type type,
+                 enum move_type type,
                  unsigned int from,
                  unsigned int to,
-                 enum pieces captured,
-                 enum pieces moved) {
+                 enum piece captured,
+                 enum piece moved) {
         struct move n;
 
         n.type = type;
@@ -297,6 +294,6 @@ void append_move(struct move_list *v,
         n.captured = captured;
         n.moved = moved;
 
-        v.v[v.n++] = n;
+        v->v[v->n++] = n;
 }
 
