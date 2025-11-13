@@ -1,5 +1,11 @@
 #include "search.h"
 
+int nodes = 0;
+int terminate_search = 0;
+
+time_t search_time;
+time_t max_search_time = 10;
+
 static int sum_material() {
         int piece_value[7] = {
                 -1,
@@ -92,35 +98,56 @@ int eval() {
         return turn == WHITE ? total : -total;
 }
 
-struct move get_move(int depth) {
+struct move get_move(time_t available_time) {
         struct move_list v;
+
+        struct move ret;
+
         struct move best_move;
-        int best_score = -INT_MAX;
+        int best_score;
         int score;
 
         int alpha = -INT_MAX;
         int beta = INT_MAX;
 
+        int depth = 1;
+
         int i;
 
-        gen_moves(&v);
+        search_time = time(&search_time);
+        max_search_time = available_time;
+        terminate_search = 0;
 
-        best_move = v.v[0];
+        while (!terminate_search) {
+                best_score = -INT_MAX;
 
-        for (i = 0; i < v.n; i++) {
-                make_move(v.v[i]);
+                gen_moves(&v);
 
-                score = -alpha_beta(-beta, -alpha, depth - 1);
+                best_move = v.v[0];
 
-                undo_move(v.v[i]);
+                for (i = 0; i < v.n; i++) {
+                        make_move(v.v[i]);
 
-                if (score > best_score) {
-                        best_score = score;
-                        best_move = v.v[i];
+                        score = -alpha_beta(-beta, -alpha, depth - 1);
+
+                        undo_move(v.v[i]);
+
+                        if (score > best_score) {
+                                best_score = score;
+                                best_move = v.v[i];
+                        }
                 }
+
+                printf("%d\n", best_score);
+
+                if (!terminate_search) {
+                        ret = best_move;
+                }
+
+                depth++;
         }
 
-        return best_move;
+        return ret;
 }
 
 int alpha_beta(int alpha, int beta, int depth) {
@@ -128,8 +155,13 @@ int alpha_beta(int alpha, int beta, int depth) {
         int score;
         int best_score = -INT_MAX;
         int i;
+
+        nodes++;
+        if (nodes & (1 << 10)) {
+                check_in();
+        }
                 
-        if (depth == 0) {
+        if (depth == 0 || terminate_search) {
                 return eval();
         }
 
@@ -139,7 +171,7 @@ int alpha_beta(int alpha, int beta, int depth) {
                 return 0;
         }
 
-        for (i = 0; i < v.n; i++) {
+        for (i = 0; i < v.n && !terminate_search; i++) {
                 make_move(v.v[i]);
 
                 /* Null window search */
@@ -218,4 +250,14 @@ int quiesce(int alpha, int beta, int depth) {
         }
 
         return best_score;
+}
+
+void check_in() {
+        time_t current_time;
+
+        current_time = time(&current_time);
+
+        if (current_time - search_time > max_search_time) {
+                terminate_search = 1;
+        }
 }
