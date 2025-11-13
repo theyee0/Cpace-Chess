@@ -37,7 +37,7 @@ static int sum_material() {
         }
 
         if (!white_king) {
-                score = -INT_MAX
+                score = -INT_MAX;
         }
 
         if (!black_king) {
