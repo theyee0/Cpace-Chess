@@ -1,9 +1,9 @@
 #include "board.h"
 
-enum pieces board[BOARD_SIZE];
-enum turns turn;
+enum piece board[BOARD_SIZE];
+enum color turn;
 
-enum color piece_color(enum pieces piece) {
+enum color piece_color(enum piece piece) {
         return (piece & 0x10) && 1;
 }
 
@@ -55,7 +55,7 @@ void clear_board() {
 }
 
 void reset_board() {
-        enum pieces standard = {
+        enum piece standard = {
                 IV, IV, IV, IV, IV, IV, IV,
                 IV, IV, IV, IV, IV, IV, IV,
                 IV, IV, IV, IV, IV, IV, IV,
@@ -133,7 +133,7 @@ void reset_board() {
 }
 
 
-void set_board(enum pieces *v) {
+void set_board(enum piece *v) {
         int i;
 
         for (i = 0; i < BOARD_SIZE; i++) {

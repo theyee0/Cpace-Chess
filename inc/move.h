@@ -3,25 +3,25 @@
 
 #include "board.h"
 
-extern enum pieces board[BOARD_SIZE];
-extern enum turn turn;
+extern enum piece board[BOARD_SIZE];
+extern enum color turn;
 
 enum move_type {
         QU, TA
-}
+};
 
 struct move {
-        struct move_type type;
+        enum move_type type;
         unsigned int from;
         unsigned int to;
-        enum pieces captured;
-        enum pieces moved;
-}
+        enum piece captured;
+        enum piece moved;
+};
 
 struct move_list {
         struct move v[256];
         int n;
-}
+};
 
 void make_move(struct move m);
 void undo_move(struct move m);

@@ -9,7 +9,7 @@
 #define BOARD_AREA 3
 #define PIECE_MASK 0xF
 
-enum pieces {
+enum piece {
         WK = 0x00, BK = 0x10,
         WQ = 0x01, BQ = 0x11,
         WR = 0x02, BR = 0x12,
@@ -20,7 +20,7 @@ enum pieces {
         EM = 0x20, IV = 0x21
 };
 
-enum directions {
+enum direction {
         N = 6, E = 1, S = -6, W = -1, H = 36, L = -36,
         NH = N + H, EH = E + H, SH = S + H, WH = W + H,
         NL = N + L, EL = E + L, SL = S + L, WL = W + L,
@@ -41,15 +41,15 @@ enum color {
         BLACK = 0x1
 };
 
-extern enum pieces board[BOARD_SIZE];
+extern enum piece board[BOARD_SIZE];
 extern enum color turn;
 
 void print_board();
 void clear_board();
 void reset_board();
-void set_board(enum pieces*);
+ void set_board(enum piece*);
 
-enum color piece_color(enum pieces piece);
+enum color piece_color(enum piece piece);
 
 int is_enemy(unsigned int);
 int is_empty(unsigned int);
