@@ -1,6 +1,8 @@
 #ifndef __BOARD_H
 #define __BOARD_H
 
+#include <stdio.h>
+
 #define BOARD_SIZE (49 * 9)
 #define BOARD_MARGIN (49 * 2)
 #define BOARD_NUM 5

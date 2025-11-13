@@ -55,7 +55,7 @@ void clear_board() {
 }
 
 void reset_board() {
-        enum piece standard = {
+        enum piece standard[BOARD_SIZE] = {
                 IV, IV, IV, IV, IV, IV, IV,
                 IV, IV, IV, IV, IV, IV, IV,
                 IV, IV, IV, IV, IV, IV, IV,
