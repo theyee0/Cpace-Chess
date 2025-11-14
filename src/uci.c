@@ -482,7 +482,8 @@ void printboard() {
 void help() {
         char *helpstrings[4] = {
                 "uci - Check if engine is in UCI mode",
-                "position [current | startpos | fen <fenstring>] moves [<move>...] - Set a positionand play some list of moves",
+                "ucinewgame - Reset the board state and set it to be white's turn",
+                "position [current | startpos | fen <fenstring>] moves [<move>...] - Set a position and play some list of moves",
                 "go - Search the current position and determine the best move",
                 "quit - Quit the program"
         };
