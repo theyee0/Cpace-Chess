@@ -19,25 +19,23 @@ static int sum_material() {
 
         int i, j, k;
         int score = 0;
-        unsigned int square;
         unsigned int piece;
 
         int white_king = 0;
         int black_king = 0;
 
-        for (i = 0; i < BOARD_NUM; i++) {
+        for (i = BOARD_MARGIN; i < BOARD_SIZE - BOARD_MARGIN; i += 49) {
                 for (j = 7; j < 42; j += 7) {
                         for (k = 1; k <= 5; k++) {
-                                square = BOARD_MARGIN + i * 49 + j + k;
-                                piece = board[square] & PIECE_MASK;
+                                piece = board[i + j + k] & PIECE_MASK;
 
                                 if (piece == 0) {
-                                        white_king |= (board[square] == WK);
-                                        black_king |= (board[square] == BK);
+                                        white_king |= (board[i + j + k] == WK);
+                                        black_king |= (board[i + j + k] == BK);
                                         continue;
                                 }
 
-                                score += (piece_color(board[square]) == BLACK) ? -piece_value[piece] : piece_value[piece];
+                                score += (piece_color(board[i + j + k]) == BLACK) ? -piece_value[piece] : piece_value[piece];
                         }
                 }
         }
@@ -114,7 +112,7 @@ struct move get_move(time_t available_time) {
 
         int i;
 
-        search_time = time(&search_time);
+        time(&search_time);
         max_search_time = available_time;
         terminate_search = 0;
 
@@ -138,9 +136,8 @@ struct move get_move(time_t available_time) {
                         }
                 }
 
-                printf("%d\n", best_score);
-
                 if (!terminate_search) {
+                        printf("%d\n", best_score);
                         ret = best_move;
                 }
 
@@ -255,7 +252,7 @@ int quiesce(int alpha, int beta, int depth) {
 void check_in() {
         time_t current_time;
 
-        current_time = time(&current_time);
+        time(&current_time);
 
         if (current_time - search_time > max_search_time) {
                 terminate_search = 1;
