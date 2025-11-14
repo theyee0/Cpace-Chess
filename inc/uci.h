@@ -6,12 +6,13 @@
 #include "move.h"
 #include <ctype.h>
 #include <stdio.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
 extern int active;
 extern int debug_mode;
+
+struct move parse_move(char*);
 
 void nextsym();
 void read();
@@ -29,5 +30,7 @@ void go();
 void stop();
 void ponderhit();
 void quit();
+
+void printboard();
 
 #endif
