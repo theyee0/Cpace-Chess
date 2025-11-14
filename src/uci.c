@@ -14,29 +14,29 @@ static int total;
 
 char *export_move(char *buf, struct move m) {
         int board;
-        int line;
-        int square;
+        int rank;
+        int file;
 
         m.from = BOARD_SIZE - 1 - m.from;
         m.to = BOARD_SIZE - 1 - m.to;
 
         board = m.from / 49 - 2;
-        line = (m.from % 49) / 7 - 1;
-        square = 6 - m.from % 7;
+        rank = (m.from % 49) / 7;
+        file = 5 - m.from % 7;
 
         buf[0] = board + 'A';
-        buf[1] = line + 'a';
-        buf[2] = square + '0';
+        buf[1] = file + 'a';
+        buf[2] = rank + '0';
 
         buf[3] = '-';
 
         board = m.to / 49 - 2;
-        line = (m.to % 49) / 7 - 1;
-        square = 6 - m.to % 7;
+        rank = (m.to % 49) / 7;
+        file = 5 - m.to % 7;
 
         buf[4] = board + 'A';
-        buf[5] = line + 'a';
-        buf[6] = square + '0';
+        buf[5] = file + 'a';
+        buf[6] = rank + '0';
 
         buf[7] = '\0';
 
@@ -370,6 +370,9 @@ void position() {
         } else if (!parse_fail && tok && !strcmp(tok, "startpos")) {
                 nextsym();
                 i++;
+        } else if (!parse_fail && tok && !strcmp(tok, "current")) {
+                nextsym();
+                i++;
         } else {
                 parse_fail = 1;
         }
@@ -400,10 +403,12 @@ void position() {
         } else {
                 rewindsym(i);
 
-                assert(cursym() && (!strcmp(cursym(), "startpos") || !strcmp(cursym(), "fen")));
+                assert(cursym() && (!strcmp(cursym(), "startpos") || !strcmp(cursym(), "fen") || !strcmp(cursym(), "current")));
                 if (!strcmp(cursym(), "startpos")) {
                         turn = WHITE;
                         reset_board();
+                        nextsym();
+                } else if (!strcmp(cursym(), "current")) {
                         nextsym();
                 } else {
                         nextsym();
