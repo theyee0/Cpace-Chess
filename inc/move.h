@@ -17,6 +17,7 @@ struct move {
         unsigned int to;
         enum piece captured;
         enum piece moved;
+        int score;
 };
 
 struct move_list {

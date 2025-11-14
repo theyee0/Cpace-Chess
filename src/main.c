@@ -3,10 +3,11 @@
 
 int main() {
         char buf[1024];
-        
+
         reset_board();
         turn = WHITE;
 
+        /* Perform uci input loop */
         while (active) {
                 fgets(buf, 1024, stdin);
                 command(buf);

@@ -12,6 +12,7 @@ static char *tokens[1024];
 static int cur;
 static int total;
 
+/* Given a move struct, return a string in long algebraic notation */
 char *export_move(char *buf, struct move m) {
         int board;
         int rank;
@@ -43,6 +44,7 @@ char *export_move(char *buf, struct move m) {
         return buf;
 }
 
+/* Given a string in long algebraic notation, return a move struct */
 struct move parse_move(char *move_code) {
         struct move m;
         int i = 0;
@@ -119,10 +121,12 @@ struct move parse_move(char *move_code) {
         return m;
 }
 
+/* Step to the next symbol in the sequence */
 void nextsym() {
         cur++;
 }
 
+/* Step `n` symbols back in the sequence */
 void rewindsym(int n) {
         if (cur > n) {
                 cur -= n;
@@ -131,10 +135,12 @@ void rewindsym(int n) {
         }
 }
 
+/* If valid, return the current symbol */
 char *cursym() {
         return cur < total ? tokens[cur] : NULL;
 }
 
+/* In an array of strings, find the first index matching a target string */
 static int match_str(char *s, char **strings, int n) {
         int i;
 
@@ -147,19 +153,21 @@ static int match_str(char *s, char **strings, int n) {
         return -1;
 }
 
+/* Parse a command given as a string parameter */
 void command(char *input) {
         char *tok;
 
-        char *valid[12] = {
+        char *valid[13] = {
                 "uci", "debug", "isready", "setoption",
                 "register", "ucinewgame", "position",
-                "go", "stop", "ponderhit", "quit", "printboard"
+                "go", "stop", "ponderhit", "quit", "printboard",
+                "help"
         };
 
-        void (*function[12])() = {
+        void (*function[13])() = {
                 uci, debug, isready, setoption,
                 reg, ucinewgame, position,
-                go, stop, ponderhit, quit, printboard
+                go, stop, ponderhit, quit, printboard, help
         };
 
         int i;
@@ -182,7 +190,7 @@ void command(char *input) {
                 tok = strtok(NULL, " \n");
         }
 
-        while (cursym() != NULL && (i = match_str(cursym(), valid, 12)) < 0) {
+        while (cursym() != NULL && (i = match_str(cursym(), valid, 13)) < 0) {
                 nextsym();
         }
 
@@ -195,10 +203,12 @@ void command(char *input) {
         function[i]();
 }
 
+/* Respond to the `uci` command */
 void uci() {
         printf("uciok\n");
 }
 
+/* Respond to the `debug` command */
 void debug() {
         char *valid[2] = {
                 "on", "off"
@@ -223,24 +233,30 @@ void debug() {
         }
 }
 
-/* Change so engine responds during search */
+/* Respond to the `isready` command */
 void isready() {
+        /* TODO: Change so engine responds during search */
+
         printf("readyok\n");
 }
 
+/* Set engine parameters */
 void setoption() {
         printf("Not yet implemented: '%s'.\n", original);
 }
 
+/* Register the engine */
 void reg() {
         printf("Not yet implemented: '%s'.\n", original);
 }
 
+/* Reset the game */
 void ucinewgame() {
         turn = WHITE;
         reset_board();
 }
 
+/* Check if the input sequence represents a valid FEN string */
 static int valid_fen() {
         int cur_line = 0;
         int num_lines = 0;
@@ -297,6 +313,7 @@ static int valid_fen() {
         return num_lines == 25;
 }
 
+/* Assuming the sequence contains a valid fen string, load it into the board */
 static void parse_pos() {
         char *fen;
 
@@ -347,6 +364,7 @@ static void parse_pos() {
         nextsym();
 }
 
+/* Parse a position and moves */
 void position() {
         char *tok;
         struct move m;
@@ -428,6 +446,7 @@ void position() {
         }
 }
 
+/* Begin search unconditionally */
 void go() {
         char buf[10];
         struct move m;
@@ -439,18 +458,38 @@ void go() {
         printf("%s\n", export_move(buf, m));
 }
 
+/* Terminate a search */
 void stop() {
         terminate_search = 1;
 }
 
+/* Tell the engine to consider potential responses to a position without having played them */
 void ponderhit() {
         printf("Not yet implemented: '%s'.\n", original);
 }
 
+/* Quit the program */
 void quit() {
         active = 0;
 }
 
+/* Print the current board state */
 void printboard() {
         print_board();
+}
+
+/* Print brief help */
+void help() {
+        char *helpstrings[4] = {
+                "uci - Check if engine is in UCI mode",
+                "position [current | startpos | fen <fenstring>] moves [<move>...] - Set a positionand play some list of moves",
+                "go - Search the current position and determine the best move",
+                "quit - Quit the program"
+        };
+
+        int i;
+
+        for (i = 0; i < 4; i++) {
+                printf("%s\n", helpstrings[i]);
+        }
 }

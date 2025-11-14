@@ -30,6 +30,7 @@ void go();
 void stop();
 void ponderhit();
 void quit();
+void help();
 
 void printboard();
 

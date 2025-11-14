@@ -3,10 +3,12 @@
 enum piece board[BOARD_SIZE];
 enum color turn;
 
+/* Return the color of a given piece */
 enum color piece_color(enum piece piece) {
         return (piece & 0x10) && 1;
 }
 
+/* Return the symbol to be printed on the board, given a piece */
 static char piece_symbol(enum piece piece) {
         char *white_pieces = "KQRBNUP";
         char *black_pieces = "kqrbnup";
@@ -22,14 +24,10 @@ static char piece_symbol(enum piece piece) {
         }
 }
 
+/* Print all sub-boards */
 void print_board() {
         int i, j, k;
         int square;
-
-        for (i = 0; i < 7; i++) {
-                printf("=");
-        }
-        printf("\n");
 
         for (i = BOARD_MARGIN; i < BOARD_SIZE - BOARD_MARGIN; i += 49) {
                 for (j = 0; j < 49; j += 7) {
@@ -44,12 +42,10 @@ void print_board() {
                 printf("\n");
         }
 
-        for (i = 0; i < 7; i++) {
-                printf("=");
-        }
         printf("\n");
 }
 
+/* Fill board with empty squares */
 void clear_board() {
         int i, j, k;
         int square;
@@ -64,6 +60,7 @@ void clear_board() {
         }
 }
 
+/* Reset board to the standard Raumschach position */
 void reset_board() {
         enum piece standard[BOARD_SIZE] = {
                 IV, IV, IV, IV, IV, IV, IV,
@@ -142,7 +139,7 @@ void reset_board() {
         set_board(standard);
 }
 
-
+/* Initialize the board with a list of values */
 void set_board(enum piece *v) {
         int i;
 
@@ -151,10 +148,12 @@ void set_board(enum piece *v) {
         }
 }
 
+/* Check if a given square contains an enemy piece */
 int is_enemy(unsigned int square) {
         return board[square] != IV && board[square] != EM && piece_color(board[square]) != turn;
 }
 
+/* Given a piece code, return the piece enumeration */
 enum piece get_piece(char code) {
         char *white_codes = "KQRBNUP";
         enum piece white_pieces[7] = {
@@ -179,18 +178,22 @@ enum piece get_piece(char code) {
         }
 }
 
+/* Wrapper to check if a square is empty */
 int is_empty(unsigned int square) {
         return board[square] == EM;
 }
 
+/* Wrapper to check if a square is valid */
 int is_valid(unsigned int square) {
         return board[square] != IV;
 }
 
+/* Wrapper to check if a square is invalid */
 int is_invalid(unsigned int square) {
         return board[square] == IV;
 }
 
+/* Wrapper to check if a square contains a friendly piece */
 int is_friendly(unsigned int square) {
         return board[square] != IV && board[square] != EM && piece_color(board[square]) == turn;
 }
