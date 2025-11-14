@@ -52,7 +52,7 @@ static int sum_material() {
 }
 
 static int compute_mobility() {
-        const int weight = 17;
+        const int weight = 7;
 
         struct move_list v;
         enum color current_turn = turn;
@@ -137,7 +137,7 @@ struct move get_move(time_t available_time) {
                 }
 
                 if (!terminate_search) {
-                        printf("%d\n", best_score);
+                        printf("depth %d: %d\n", depth, turn == WHITE ? best_score : -best_score);
                         ret = best_move;
                 }
 
@@ -157,9 +157,13 @@ int alpha_beta(int alpha, int beta, int depth) {
         if (nodes & (1 << 10)) {
                 check_in();
         }
-                
-        if (depth == 0 || terminate_search) {
-                return eval();
+
+        if (terminate_search) {
+                return 0;
+        }
+
+        if (depth == 0) {
+                return quiesce(alpha, beta, 5);
         }
 
         gen_moves(&v);
@@ -199,15 +203,13 @@ int alpha_beta(int alpha, int beta, int depth) {
 int quiesce(int alpha, int beta, int depth) {
         const int delta = 200;
         struct move_list v;
-        int best_score;
-        int score;
+        int best_score = -INT_MAX;
+        int score = eval();
         int i;
 
         if (depth <= 0) {
-                return eval();
+                return score;
         }
-
-        score = eval();
 
         if (score >= beta) {
                 return score;
@@ -226,7 +228,7 @@ int quiesce(int alpha, int beta, int depth) {
         for (i = 0; i < v.n; i++) {
                 make_move(v.v[i]);
 
-                score = -quiesce(-(alpha + 1), alpha, depth - 1);
+                score = -quiesce(-(alpha + 1), -alpha, depth - 1);
                 if (alpha < score && score < beta) {
                         score = -quiesce(-beta, -alpha, depth - 1);
                 }
