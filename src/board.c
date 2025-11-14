@@ -31,10 +31,10 @@ void print_board() {
         }
         printf("\n");
 
-        for (i = 0; i < BOARD_NUM; i++) {
+        for (i = BOARD_MARGIN; i < BOARD_SIZE - BOARD_MARGIN; i += 49) {
                 for (j = 0; j < 49; j += 7) {
                         for (k = 1; k <= 5; k++) {
-                                square = BOARD_MARGIN + i * 49 + j + k;
+                                square = i + j + k;
                                 printf("%c ", piece_symbol(board[square]));
                         }
 
@@ -54,10 +54,10 @@ void clear_board() {
         int i, j, k;
         int square;
 
-        for (i = 0; i < BOARD_NUM; i++) {
+        for (i = BOARD_MARGIN; i < BOARD_SIZE - BOARD_MARGIN; i += 49) {
                 for (j = 7; j < 42; j += 7) {
                         for (k = 1; k <= 5; k++) {
-                                square = BOARD_MARGIN + i * 49 + j + k;
+                                square = i + j + k;
                                 board[square] = EM;
                         }
                 }
@@ -152,11 +152,7 @@ void set_board(enum piece *v) {
 }
 
 int is_enemy(unsigned int square) {
-        if (board[square] == IV || board[square] == EM) {
-                return 0;
-        }
-
-        return piece_color(board[square]) != turn;
+        return board[square] != IV && board[square] != EM && piece_color(board[square]) != turn;
 }
 
 enum piece get_piece(char code) {
@@ -196,9 +192,5 @@ int is_invalid(unsigned int square) {
 }
 
 int is_friendly(unsigned int square) {
-        if (board[square] == IV || board[square] == EM) {
-                return 0;
-        }
-
-        return piece_color(board[square]) == turn;
+        return board[square] != IV && board[square] != EM && piece_color(board[square]) == turn;
 }
