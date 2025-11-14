@@ -159,6 +159,30 @@ int is_enemy(unsigned int square) {
         return piece_color(board[square]) != turn;
 }
 
+enum piece get_piece(char code) {
+        char *white_codes = "KQRBNUP";
+        enum piece white_pieces[7] = {
+                WK, WQ, WR, WB, WN, WU, WP
+        };
+
+        char *black_codes = "kqrbnup";
+        enum piece black_pieces[7] = {
+                BK, BQ, BR, BB, BN, BU, BP
+        };
+
+        int index;
+
+        if (strchr(white_codes, code)) {
+                index = strchr(white_codes, code) - white_codes;
+                return white_pieces[index];
+        } if (strchr(black_codes, code)) {
+                index = strchr(black_codes, code) - black_codes;
+                return black_pieces[index];
+        } else {
+                return IV;
+        }
+}
+
 int is_empty(unsigned int square) {
         return board[square] == EM;
 }

@@ -2,6 +2,7 @@
 #define __BOARD_H
 
 #include <stdio.h>
+#include <string.h>
 
 #define BOARD_SIZE (49 * 9)
 #define BOARD_MARGIN (49 * 2)
@@ -46,6 +47,8 @@ enum color {
 
 extern enum piece board[BOARD_SIZE];
 extern enum color turn;
+
+enum piece get_piece(char code);
 
 void print_board();
 void clear_board();
