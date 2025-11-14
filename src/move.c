@@ -30,7 +30,7 @@ void undo_move(struct move m) {
 }
 
 void gen_moves(struct move_list *v) {
-        int i;
+        int i, j, k;
 
         void (*gen_func[7]) (struct move_list*, unsigned int) = {
                 gen_king,
@@ -44,17 +44,21 @@ void gen_moves(struct move_list *v) {
 
         v->n = 0;
 
-        for (i = 0; i < BOARD_SIZE; i++) {
-                if (!is_friendly(i)) {
-                        continue;
-                }
+        for (i = BOARD_MARGIN; i < BOARD_SIZE - BOARD_MARGIN; i += 49) {
+		for (j = 7; j < 42; j += 7) {
+			for (k = 1; k <= 5; k++) {
+				if (!is_friendly(i + j + k)) {
+					continue;
+				}
 
-                gen_func[board[i] & PIECE_MASK](v, i);
+				gen_func[board[i + j + k] & PIECE_MASK](v, i + j + k);
+			}
+		}
         }
 }
 
 void gen_ta_moves(struct move_list *v) {
-        int i;
+        int i, j, k;
 
         void (*gen_func[7]) (struct move_list*, unsigned int) = {
                 gen_ta_king,
@@ -68,12 +72,17 @@ void gen_ta_moves(struct move_list *v) {
 
         v->n = 0;
 
-        for (i = 0; i < BOARD_SIZE; i++) {
-                if (!is_friendly(i)) {
-                        continue;
-                }
 
-                gen_func[board[i] & PIECE_MASK](v, i);
+        for (i = BOARD_MARGIN; i < BOARD_SIZE - BOARD_MARGIN; i += 49) {
+		for (j = 7; j < 42; j += 7) {
+			for (k = 1; k <= 5; k++) {
+				if (!is_friendly(i + j + k)) {
+					continue;
+				}
+
+				gen_func[board[i + j + k] & PIECE_MASK](v, i + j + k);
+			}
+		}
         }
 }
 
@@ -301,8 +310,6 @@ void append_move(struct move_list *v,
                  enum piece captured,
                  enum piece moved) {
         struct move n;
-
-        assert(type == QU || type == TA);
 
         n.type = type;
         n.from = from;
