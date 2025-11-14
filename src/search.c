@@ -118,10 +118,10 @@ struct move get_move(time_t available_time) {
         max_search_time = available_time;
         terminate_search = 0;
 
+        gen_moves(&v);
+
         while (!terminate_search) {
                 best_score = -INT_MAX;
-
-                gen_moves(&v);
 
                 best_move = v.v[0];
 
