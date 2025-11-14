@@ -7,6 +7,7 @@ extern enum piece board[BOARD_SIZE];
 extern enum color turn;
 
 enum move_type {
+        IVM,
         QU, TA
 };
 

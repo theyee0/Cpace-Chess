@@ -1,4 +1,5 @@
 #include "move.h"
+#include <assert.h>
 
 void make_move(struct move m) {
         switch (m.type) {
@@ -6,6 +7,8 @@ void make_move(struct move m) {
         case TA:
                 board[m.from] = EM;
                 board[m.to] = m.moved;
+                break;
+        default:
                 break;
         }
 
@@ -18,6 +21,8 @@ void undo_move(struct move m) {
         case TA:
                 board[m.from] = m.moved;
                 board[m.to] = m.captured;
+                break;
+        default:
                 break;
         }
 
@@ -296,6 +301,8 @@ void append_move(struct move_list *v,
                  enum piece captured,
                  enum piece moved) {
         struct move n;
+
+        assert(type == QU || type == TA);
 
         n.type = type;
         n.from = from;
