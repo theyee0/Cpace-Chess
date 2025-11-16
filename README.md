@@ -3,7 +3,8 @@ A space chess engine written in ANSI C conforming to the rules of Raumschach
 
 # Demo
 
-Demo coming soon...
+https://github.com/user-attachments/assets/d9758eb4-3cc5-4314-aedf-ace23ecf7b94
+
 
 # Usage
 
